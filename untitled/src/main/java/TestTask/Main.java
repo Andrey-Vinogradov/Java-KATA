@@ -1,84 +1,40 @@
 package TestTask;
-
-import java.util.Scanner;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(textModifier());
-    }
+        // Укажите путь к вашей папке
+        File folder = new File("c:/tmp/");
 
-    public static String textModifier() {
-        Scanner scanner = new Scanner(System.in);
+        // Проверяем, существует ли папка
+        if (!folder.exists()) {
+            System.out.println("Папка не существует: " + folder.getAbsolutePath());
+            return;
+        }
 
-        // Чтение строки из консоли
-        System.out.println("Введите строку:");
-        String input = scanner.nextLine();
-        scanner.close();
+        // Проверяем, является ли путь директорией
+        if (!folder.isDirectory()) {
+            System.out.println("Указанный путь не является папкой: " + folder.getAbsolutePath());
+            return;
+        }
 
-        // a. Удаление лишних пробелов
-        char[] charsA = input.toCharArray();
-        String variantA = ""; // Пустая строка для хранения результата
-        boolean wasSpace = false;
+        // Получаем список файлов
+        File[] files = folder.listFiles();
 
-        for (char currentChar : charsA) {
-            if (currentChar == ' ') {
-                if (!wasSpace) {
-                    variantA += currentChar;
-                }
-                wasSpace = true;
-            } else {
-                variantA += currentChar;
-                wasSpace = false;
+        // Проверяем, есть ли файлы в папке
+        if (files == null || files.length == 0) {
+            System.out.println("Папка пуста: " + folder.getAbsolutePath());
+            return;
+        }
+
+        // Выводим информацию о каждом файле
+        for (File file : files) {
+            // Пропускаем подпапки (если нужно только файлы)
+            if (file.isFile()) {
+                System.out.println("Имя: " + file.getName() +
+                        ", Размер: " + file.length() + " байт" +
+                        ", Путь: " + file.getAbsolutePath());
             }
         }
-//        System.out.println("После удаления двойных пробелов: " + variantA);
-
-        // b. Обработка символа '-'
-        char[] charsB = variantA.toCharArray();
-        String variantB = ""; // Пустая строка для хранения результата
-
-        for (int i = 0; i < charsB.length; i++) {
-            if (charsB[i] == '-' && i > 0 && i < charsB.length - 1) {
-                // Меняем местами символы слева и справа от '-'
-                variantB = variantB.substring(0, variantB.length() - 1) + charsB[i + 1] + charsB[i - 1];
-                i++; // Пропускаем символ справа от '-'
-            } else {
-                variantB += charsB[i];
-            }
-        }
-//        System.out.println("После обработки символа '-' : " + variantB);
-
-        // c. Замена символа '+' на '!'
-        char[] charsC = variantB.toCharArray();
-        String variantC = ""; // Пустая строка для хранения результата
-
-        for (char c : charsC) {
-            if (c == '+') {
-                variantC += '!';
-            } else {
-                variantC += c;
-            }
-        }
-//        System.out.println("После замены символа '+' на '!' : " + variantC);
-
-        // d. Удаление цифр и подсчёт их суммы
-        char[] charsD = variantC.toCharArray();
-        String variantD = ""; // Пустая строка для хранения результата
-        int sum = 0;
-
-        for (char c : charsD) {
-            if (Character.isDigit(c)) {
-                sum += Character.getNumericValue(c);
-            } else {
-                variantD += c;
-            }
-        }
-        if (sum > 0) {
-            variantD += " " + sum;
-        }
-//        System.out.println("После подсчёта суммы цифр и их удаления: " + variantD);
-
-        // Возвращаем окончательный результат
-        return variantD;
     }
 }
